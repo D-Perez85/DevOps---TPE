@@ -1,0 +1,30 @@
+{
+  "name": "crud-men",
+  "version": "1.0.0",
+  "description": "CRUD Node.js + Express + SQLite con opción sandbox y tests con Jest",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "jest",
+    "testing": "jest --runInBand",
+    "test:watch": "jest --watch",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "test:sandbox": "cross-env NODE_ENV=test USE_SANDBOX=1 jest"
+  },
+  "jest": {
+    "testEnvironment": "jsdom"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.2.0",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^9.0.0",
+    "jest": "^30.2.0",
+    "jest-environment-jsdom": "^30.2.0",
+    "supertest": "^7.1.4"
+  }
+}

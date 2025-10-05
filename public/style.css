@@ -1,0 +1,128 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --celeste: rgb(40, 174, 192);
+  --celeste-oscuro: rgb(40, 108, 117);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Roboto Mono", monospace, sans-serif;
+  background-color: rgb(226, 226, 226);
+  align-items: center;
+  height: 100vh;
+}
+
+header {
+  padding: 1rem 2rem;
+  background-color: var(--celeste);
+  color: white;
+}
+
+header h1 {
+  text-align: center;
+}
+
+.container_header {
+  display: flex;
+  justify-content: end;
+  justify-content: space-between;
+}
+
+main {
+  padding: 1rem 2rem;
+}
+
+.info {
+  display: flex;
+  gap: 0.7rem;
+  color: var(--oscuro);
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 450px;
+}
+
+.container_productos,
+.container_alta {
+  text-align: center;
+  margin-left: 25px;
+}
+
+.container_alta input {
+  text-align: center;
+  padding: 1px;
+}
+
+.container_alta h4 {
+  margin-bottom: 10px;
+}
+
+.error{
+color: red;
+font-size: 10px;
+}
+.miTabla {
+  width: 50%;
+}
+
+.miTabla th,
+.miTabla td {
+  border: 1px solid #00000045;
+  padding: 8px;
+  text-align: left;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+form input {
+  margin-top: 5px;
+  border: 1px solid black;
+}
+
+form {
+  background-color: white;
+  width: 23rem;
+  padding: 2rem 3rem;
+  display: flex;
+  flex-direction: column;
+}
+
+h2 {
+  text-align: center;
+}
+
+input:focus-visible,
+select:focus-visible {
+  outline: 1px solid black;
+}
+
+input {
+  outline: none;
+  border: 1px solid gray;
+  margin-top: 3px;
+  padding: 5px;
+  font-family: "Roboto Mono", monospace, sans-serif;
+}
+
+.form button {
+  font-family: "Roboto Mono", monospace, sans-serif;
+  padding: 5px;
+  font-size: 1rem;
+  border: none;
+  background-color: #00ad57;
+  color: white;
+  cursor: pointer;
+  margin-top: 10px;
+}

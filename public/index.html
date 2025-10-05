@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DevOps TPE</title>
+  <link rel="stylesheet" href="./style.css" />
+  <body>
+    <header>
+      <div class="container_header">
+      <h1>Inventario de Productos</h1>
+      </div>
+    </header>
+
+    <main class="info">
+      <div class="container_alta form">
+        <form id="miFormulario" >
+          <h4>Alta Nuevo Producto</h4>
+
+          <input id="name" placeholder="nombre del producto" />
+           <span class='error' id='errorNombre'></span>
+          <input id="price" type="number" step="0.01" placeholder="valor del producto" />
+          <span class='error' id='errorPrecio'></span>
+          <input id="stock" type="number" placeholder="cantidad o stock" />
+          <span class='error' id='errorStock'></span>
+          <button type="submit" id="create">Alta</button>
+        </form>
+        </div>
+      <br />
+      <br />
+
+
+      <div class="container_productos">
+        <h4>Lista de Productos</h4>
+        <table class="miTabla">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Precio</th>
+              <th>Stock</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody id="list"></tbody>
+        </table>
+      </div>
+      <script src="validateFormData.js"></script>
+      <script src="app.js"></script>
+    </main>
+  </body>
+</html>
