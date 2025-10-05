@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  app:
+    build: .   #Usa el Dockerfile del directorio actual
+    container_name: node_app
+    volumes:
+      - .:/app
+    ports:
+      - "3000:3000"  # expone el puerto 3000 local
+    environment:
+      - NODE_ENV=development
+    command: npm start
+    depends_on:
+      - test
+
+  test:
+    build: .  #Usa el Dockerfile del directorio actual
+    container_name: node_app_test
+    volumes:
+      - .:/app
+    environment:
+      - NODE_ENV=test
+    command: npm test
