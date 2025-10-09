@@ -1,24 +1,37 @@
-version: '3'
-
 services:
   app:
-    build: .   #Usa el Dockerfile del directorio actual
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: node_app
+    working_dir: /app
+    user: "0:0"                 # <- root para evitar EACCES
     volumes:
-      - .:/app
+      - .:/app                  # tu código
+      - node_modules:/app/node_modules   # volumen manejado por Docker
     ports:
-      - "3000:3000"  # expone el puerto 3000 local
+      - "3000:3000"
     environment:
       - NODE_ENV=development
-    command: npm start
+    command: sh -c "npm ci || npm install && npm start"
     depends_on:
       - test
 
   test:
-    build: .  #Usa el Dockerfile del directorio actual
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: node_app_test
+    working_dir: /app
+    user: "0:0"                 # <- root también
     volumes:
       - .:/app
+      - node_modules:/app/node_modules
     environment:
       - NODE_ENV=test
-    command: npm test
+    command: sh -c "npm ci || npm install && npm test"
+
+volumes:
+  node_modules:
+
+
