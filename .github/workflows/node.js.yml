@@ -34,9 +34,7 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
-    
-    #configuraciòn nueva
-    - name: agregar un directorio
+    - name: agregar un directorio   #configuraciòn nueva
       run: echo "path/" >> $GITHUB_ENV
     - name: Mensaje de debug
       run: echo "::debu::" + "Mensaje de Debug"
