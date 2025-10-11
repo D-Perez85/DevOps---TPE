@@ -30,7 +30,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    #- id: run_ci    
+    - id: run_ci    
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
@@ -38,5 +38,5 @@ jobs:
      # run: echo "path/" >> $GITHUB_ENV
     - name: Mensaje de debug
       run: echo "::debu::" + "Mensaje de Debug"
-    #- name: capturar output
-    #run: echo "${{ steps.run_ci.outputs.result }}
+    - name: capturar output
+      run: echo "${{ steps.run_ci.outputs.result }}
