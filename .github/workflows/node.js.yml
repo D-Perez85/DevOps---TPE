@@ -30,15 +30,13 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - id: run_ci 
-      run: | 
-       echo "result=OK-$(date -u +%FT%TZ)" >> "$GITHUB_OUTPUT"
+    #- id: run_ci 
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
     - name: agregar un directorio   #configuraciòn nueva
-      run: echo "$PWD/path/" >> $GITHUB_ENV
+      run: echo "path/" >> $GITHUB_ENV
     - name: Mensaje de debug
       run: echo "::debug::Mensaje_de_Debug"
-    - name: capturar output
-      run: echo "${{ steps.run_ci.outputs.result }}
+      #- name: capturar output
+      #run: echo "${{ steps.run_ci.outputs.result }}
