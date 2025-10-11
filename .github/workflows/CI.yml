@@ -1,0 +1,110 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: CI.yml
+
+on:
+  push:
+    branches: [ "master" ]
+    paths-ignore:
+      - "**.md"
+  pull_request:
+    branches: [ "master" ]
+    paths-ignore:
+      - "**.md"
+  schedule:
+    - cron: "0 7 * * 1,4"   # 07:00 UTC (≈ 04:00 America/Argentina/Buenos_Aires)
+  workflow_dispatch: #DOING
+
+concurrency: 
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_ENV: CI
+
+jobs:
+  test:
+    name: Test (Node ${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+
+    steps:
+      - name: 🧾 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🛠️ Setup Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: 📦 Instalar dependencias
+        run: npm ci --no-audit --prefer-offline
+
+      - name: 🧼 Lint (si existe)
+        run: npm run lint --if-present
+
+      - name: 🧪 Tests
+        run: npm test
+
+      - name: 🏗️ Build (si existe)
+        run: npm run build --if-present
+
+      # (Opcional) Subir artefacto de build SOLO en Node 20
+      - name: ⬆️ Subir artefacto /dist
+        if: matrix.node-version == '20.x'
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: |
+            dist/**
+            build/**
+          if-no-files-found: ignore
+
+  docker:
+    name: Docker build & push
+    needs: test
+    runs-on: ubuntu-latest
+    # Solo cuando el evento es push directo a master (no PRs)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: 🧾 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🔖 Metadatos de imagen
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/mi-app-node
+          tags: |
+            type=raw,value=latest
+            type=sha
+            # Si haces releases con tags semver, habilita:
+            # type=ref,event=tag
+
+      - name: 🔐 Login Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: 🐳 Build & Push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          # Opcional: mejora caché entre builds
+          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/mi-app-node:latest
+          cache-to: type=inline
