@@ -1,14 +1,24 @@
 const { validateFull, validatePartial } = require("./utils");
-
 const express = require('express');
 const path = require('path');
+const fs = require('fs'); // <-- agregado para manejo de filesystem
 
 // --------- DB SETUP ---------
 const useSandbox = process.env.USE_SANDBOX === '1' || process.env.NODE_ENV === 'test';
-const dbPath = useSandbox ? ':memory:' : (process.env.DB_URL || path.join(__dirname, 'data.sqlite'));
+
+// Determinar ruta de DB
+const dbFile = useSandbox 
+  ? ':memory:' 
+  : (process.env.DB_URL || path.join(__dirname, 'data', 'data.sqlite'));
+
+// Crear carpeta si no existe (solo si no es memoria)
+if (!useSandbox) {
+  const dbDir = path.dirname(dbFile);
+  if (!fs.existsSync(dbDir)) fs.mkdirSync(dbDir, { recursive: true });
+}
 
 const Database = require('better-sqlite3');
-const db = new Database(dbPath);
+const db = new Database(dbFile);
 
 db.pragma('journal_mode = WAL');
 db.exec(`
@@ -24,6 +34,7 @@ const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// ----------------- RUTAS -----------------
 app.get('/items', (req, res) => {
   const rows = db.prepare('SELECT * FROM items ORDER BY id').all();
   res.json(rows);
@@ -86,7 +97,6 @@ app.delete('/items/:id', (req, res) => {
   db.prepare('DELETE FROM items WHERE id = ?').run(req.params.id);
   res.json(row);
 });
-
 
 app.post('/__reset', (_req, res) => {
   db.exec('DELETE FROM items; VACUUM;');
