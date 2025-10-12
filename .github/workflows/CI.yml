@@ -14,7 +14,7 @@ on:
       - "**.md"
   schedule:
     - cron: "0 7 * * 1,4"   # 07:00 UTC (≈ 04:00 America/Argentina/Buenos_Aires)
-  workflow_dispatch: #DOING
+  workflow_dispatch:
 
 concurrency: 
   group: ${{ github.workflow }}-${{ github.ref }}
