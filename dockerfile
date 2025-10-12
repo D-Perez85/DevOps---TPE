@@ -1,4 +1,4 @@
-# Base para build
+# -------- Base para build --------
 FROM node:22-alpine AS build
 WORKDIR /app
 
@@ -27,14 +27,16 @@ RUN addgroup -S nodejs && adduser -S nodeuser -G nodejs
 # Copiamos node_modules y app compilada desde build
 COPY --from=build /app /app
 
+# ---- NUEVO: crear carpeta de datos y dar permisos ----
+RUN mkdir -p /data && chown -R nodeuser:nodejs /data
+
 # Variables de entorno
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV DB_URL=/data/data.sqlite
 
-# Puerto y volumen
+# Puerto
 EXPOSE 3000
-VOLUME ["/data"]
 
 # Healthcheck
 RUN apk add --no-cache curl
