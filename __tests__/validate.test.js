@@ -1,4 +1,4 @@
-const { validateFull } = require("../utils"); 
+const { validateFull } = require('../utils');
 
 test("Nombre vacío debe fallar", () => {
   const errors = validateFull({ name: "", price: 10, stock: 1 });

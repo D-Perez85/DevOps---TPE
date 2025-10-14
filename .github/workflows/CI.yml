@@ -44,12 +44,18 @@ jobs:
 
       - name: 📦 Instalar dependencias
         run: npm ci --no-audit --prefer-offline
+      
+      - name: ✅ Verificar dependencias
+        run: npm ls
 
       - name: 🧼 Lint (si existe)
         run: npm run lint --if-present
 
       - name: 🧪 Tests
         run: npm test
+
+      - name: 🧪 Run tests with coverage
+        run: npm test -- --coverage
 
       - name: 🏗️ Build (si existe)
         run: npm run build --if-present
@@ -108,3 +114,9 @@ jobs:
           # Opcional: mejora caché entre builds
           cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/mi-app-node:latest
           cache-to: type=inline
+
+      - name: 📊 Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage
