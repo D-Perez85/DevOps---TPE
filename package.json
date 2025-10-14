@@ -18,8 +18,13 @@
     "testEnvironment": "jsdom"
   },
   "dependencies": {
+    "@sentry/node": "^6.19.7",
+    "@sentry/profiling-node": "^10.19.0",
+    "@sentry/tracing": "^7.120.4",
     "better-sqlite3": "^12.2.0",
-    "express": "^4.19.2"
+    "dotenv": "^17.2.3",
+    "express": "^4.19.2",
+    "winston": "^3.18.3"
   },
   "devDependencies": {
     "@testing-library/dom": "^9.0.0",

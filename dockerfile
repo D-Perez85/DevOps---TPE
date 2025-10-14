@@ -59,7 +59,7 @@ RUN apk add --no-cache python3 make g++ curl
 COPY package*.json ./
 
 # Instalamos todas las dependencias dentro del contenedor
-RUN npm ci
+RUN npm install @sentry/node @sentry/tracing && npm ci
 
 # Copiamos el resto del código
 COPY . .

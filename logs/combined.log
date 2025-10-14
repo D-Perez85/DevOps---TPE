@@ -1,0 +1,28 @@
+{"level":"info","message":"DevOps TPE - Servidor corriendo en http://localhost:3000","timestamp":"2025-10-14T03:19:31.617Z"}
+{"level":"info","message":"DevOps TPE - Servidor corriendo en http://localhost:3000","timestamp":"2025-10-14T03:22:50.516Z"}
+[2025-10-14T03:24:29.612Z] [32minfo[39m: DevOps TPE - Servidor inicializado en http://localhost:3000
+{"level":"info","message":"Servidor arrancando en puerto 3000...","timestamp":"2025-10-14T03:35:40.376Z"}
+{"level":"info","message":"Servidor corriendo en http://localhost:3000","timestamp":"2025-10-14T03:35:40.383Z"}
+{"level":"info","message":"Servidor arrancando en puerto 3000...","timestamp":"2025-10-14T03:38:49.969Z"}
+{"level":"info","message":"Servidor corriendo en http://localhost:3000","timestamp":"2025-10-14T03:38:49.976Z"}
+{"level":"info","message":"=== LOG DE PRUEBA EN RENDER ===","timestamp":"2025-10-14T03:38:49.976Z"}
+{"level":"error","message":"=== ERROR DE PRUEBA EN RENDER ===","timestamp":"2025-10-14T03:38:49.977Z"}
+{"level":"info","message":"Servidor arrancando en puerto 3000...","timestamp":"2025-10-14T03:42:40.411Z"}
+{"level":"info","message":"Servidor corriendo en http://localhost:3000","timestamp":"2025-10-14T03:42:40.418Z"}
+{"level":"info","message":"=== LOG DE PRUEBA EN RENDER ===","timestamp":"2025-10-14T03:42:40.419Z"}
+{"level":"error","message":"=== ERROR DE PRUEBA EN RENDER ===","timestamp":"2025-10-14T03:42:40.420Z"}
+{"level":"info","message":"Sentry activado con DSN definido","timestamp":"2025-10-14T03:50:30.428Z"}
+{"level":"info","message":"Servidor arrancando en puerto 3000...","timestamp":"2025-10-14T03:50:30.432Z"}
+{"level":"info","message":"Servidor corriendo en http://localhost:3000","timestamp":"2025-10-14T03:50:30.437Z"}
+{"level":"info","message":"=== LOG DE PRUEBA EN RENDER ===","timestamp":"2025-10-14T03:50:30.438Z"}
+{"level":"error","message":"=== ERROR DE PRUEBA EN RENDER ===","timestamp":"2025-10-14T03:50:30.438Z"}
+{"level":"info","message":"Sentry activado con DSN definido","timestamp":"2025-10-14T03:50:38.294Z"}
+{"level":"info","message":"Servidor arrancando en puerto 3000...","timestamp":"2025-10-14T03:50:38.298Z"}
+{"level":"info","message":"Servidor corriendo en http://localhost:3000","timestamp":"2025-10-14T03:50:38.303Z"}
+{"level":"info","message":"=== LOG DE PRUEBA EN RENDER ===","timestamp":"2025-10-14T03:50:38.304Z"}
+{"level":"error","message":"=== ERROR DE PRUEBA EN RENDER ===","timestamp":"2025-10-14T03:50:38.305Z"}
+{"level":"info","message":"Sentry activado con DSN definido","timestamp":"2025-10-14T03:51:29.239Z"}
+{"level":"info","message":"Servidor arrancando en puerto 3000...","timestamp":"2025-10-14T03:51:29.243Z"}
+{"level":"info","message":"Servidor corriendo en http://localhost:3000","timestamp":"2025-10-14T03:51:29.250Z"}
+{"level":"info","message":"=== LOG DE PRUEBA EN RENDER ===","timestamp":"2025-10-14T03:51:29.251Z"}
+{"level":"error","message":"=== ERROR DE PRUEBA EN RENDER ===","timestamp":"2025-10-14T03:51:29.251Z"}
