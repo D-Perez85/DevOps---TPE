@@ -89,6 +89,22 @@ app.get("/debug-sentry", (req, res) => {
   }
 });
 
+// ----------------- ENDPOINT DE HEALTH CHECK -----------------
+app.get("/health", (req, res) => {
+  try {
+    // Prueba mínima: que la DB responda
+    const check = db.prepare("SELECT 1").get();
+    res.status(200).json({
+      status: "ok",
+      database: check ? "connected" : "error",
+      timestamp: new Date().toISOString(),
+    });
+  } catch (err) {
+    res.status(500).json({ status: "error", message: err.message });
+  }
+});
+
+
 // ----------------- MANEJO DE ERRORES -----------------
 app.use((err, req, res, next) => {
   console.error("Error capturado:", err.message);

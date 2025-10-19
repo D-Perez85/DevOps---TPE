@@ -26,3 +26,18 @@
 {"level":"info","message":"Servidor corriendo en http://localhost:3000","timestamp":"2025-10-14T03:51:29.250Z"}
 {"level":"info","message":"=== LOG DE PRUEBA EN RENDER ===","timestamp":"2025-10-14T03:51:29.251Z"}
 {"level":"error","message":"=== ERROR DE PRUEBA EN RENDER ===","timestamp":"2025-10-14T03:51:29.251Z"}
+{"level":"info","message":"Sentry activado con DSN definido","timestamp":"2025-10-14T04:02:39.705Z"}
+{"level":"info","message":"Servidor arrancando en puerto 3000...","timestamp":"2025-10-14T04:02:39.709Z"}
+{"level":"info","message":"Servidor corriendo en http://localhost:3000","timestamp":"2025-10-14T04:02:39.717Z"}
+{"level":"info","message":"=== LOG DE PRUEBA EN RENDER ===","timestamp":"2025-10-14T04:02:39.718Z"}
+{"level":"error","message":"=== ERROR DE PRUEBA EN RENDER ===","timestamp":"2025-10-14T04:02:39.718Z"}
+{"level":"info","message":"Sentry activado con DSN definido","timestamp":"2025-10-19T23:39:24.525Z"}
+{"level":"info","message":"Servidor arrancando en puerto 3000...","timestamp":"2025-10-19T23:39:24.531Z"}
+{"level":"info","message":"Servidor corriendo en http://localhost:3000","timestamp":"2025-10-19T23:39:24.536Z"}
+{"level":"info","message":"=== LOG DE PRUEBA EN RENDER ===","timestamp":"2025-10-19T23:39:24.537Z"}
+{"level":"error","message":"=== ERROR DE PRUEBA EN RENDER ===","timestamp":"2025-10-19T23:39:24.537Z"}
+{"level":"info","message":"Sentry activado con DSN definido","timestamp":"2025-10-19T23:44:25.617Z"}
+{"level":"info","message":"Servidor arrancando en puerto 3000...","timestamp":"2025-10-19T23:44:25.623Z"}
+{"level":"info","message":"Servidor corriendo en http://localhost:3000","timestamp":"2025-10-19T23:44:25.631Z"}
+{"level":"info","message":"=== LOG DE PRUEBA EN RENDER ===","timestamp":"2025-10-19T23:44:25.631Z"}
+{"level":"error","message":"=== ERROR DE PRUEBA EN RENDER ===","timestamp":"2025-10-19T23:44:25.632Z"}
