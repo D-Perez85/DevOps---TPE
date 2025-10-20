@@ -98,3 +98,10 @@ clave.
 ○ Duración de la Presentación: La presentación no debe exceder los 15
 minutos y debe ser clara y concisa, permitiendo a la audiencia entender el
 flujo de trabajo y los resultados obtenidos.
+
+
+
+Lista de comandos: 
+- node server.js (inicio el servidor- remoto local) 
+- npm test (hace las pruebas unitarias y de test- remoto local)
+- http://localhost:3000/ (render entorno local)
