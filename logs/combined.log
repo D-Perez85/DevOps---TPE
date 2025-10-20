@@ -41,3 +41,8 @@
 {"level":"info","message":"Servidor corriendo en http://localhost:3000","timestamp":"2025-10-19T23:44:25.631Z"}
 {"level":"info","message":"=== LOG DE PRUEBA EN RENDER ===","timestamp":"2025-10-19T23:44:25.631Z"}
 {"level":"error","message":"=== ERROR DE PRUEBA EN RENDER ===","timestamp":"2025-10-19T23:44:25.632Z"}
+{"level":"info","message":"Sentry activado con DSN definido","timestamp":"2025-10-20T00:31:05.575Z"}
+{"level":"info","message":"Servidor arrancando en puerto 3000...","timestamp":"2025-10-20T00:31:05.580Z"}
+{"level":"info","message":"Servidor corriendo en http://localhost:3000","timestamp":"2025-10-20T00:31:05.586Z"}
+{"level":"info","message":"=== LOG DE PRUEBA EN RENDER ===","timestamp":"2025-10-20T00:31:05.587Z"}
+{"level":"error","message":"=== ERROR DE PRUEBA EN RENDER ===","timestamp":"2025-10-20T00:31:05.587Z"}
