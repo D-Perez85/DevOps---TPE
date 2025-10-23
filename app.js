@@ -1,3 +1,4 @@
+
 require("dotenv").config();
 const { validateFull } = require("./utils");
 const express = require("express");
@@ -9,6 +10,15 @@ const Sentry = require("@sentry/node");
 const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
+
+// ----------------- CONFIGURACIÓN DE SENTRY -----------------
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  tracesSampleRate: 1.0,
+});
+
+app.use(Sentry.Handlers.requestHandler());
+app.use(Sentry.Handlers.tracingHandler());
 
 // ----------------- CONFIGURACIÓN DE BASE DE DATOS -----------------
 const useSandbox =
@@ -42,57 +52,57 @@ function initDatabase(useSandbox = false) {
 
 const db = initDatabase(useSandbox);
 
-// ----------------- CONFIGURACIÓN DE SENTRY -----------------
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  tracesSampleRate: 1.0,
-});
-
 // ----------------- RUTAS -----------------
 app.get("/items", (req, res) => {
   const rows = db.prepare("SELECT * FROM items ORDER BY id").all();
   res.json(rows);
 });
 
-app.post("/items", (req, res) => {
-  const errors = validateFull(req.body);
-  if (errors.length) return res.status(400).json({ errors });
-
-  const info = db
-    .prepare("INSERT INTO items (name, price, stock) VALUES (?, ?, ?)")
-    .run(req.body.name.trim(), req.body.price, req.body.stock);
-  const created = db
-    .prepare("SELECT * FROM items WHERE id = ?")
-    .get(info.lastInsertRowid);
-  res.status(201).json(created);
-});
-
-app.delete("/items/:id", (req, res) => {
-  const row = db.prepare("SELECT * FROM items WHERE id = ?").get(req.params.id);
-  if (!row) return res.status(404).json({ error: "Item no encontrado" });
-  db.prepare("DELETE FROM items WHERE id = ?").run(req.params.id);
-  res.json(row);
-});
-
-app.post("/__reset", (_req, res) => {
-  db.exec("DELETE FROM items; VACUUM;");
-  res.json({ ok: true });
-});
-
-// Ruta para probar Sentry
-app.get("/debug-sentry", (req, res) => {
+app.post("/items", (req, res, next) => {
   try {
-    throw new Error("Error de prueba: comprobando integración con Sentry");
+    const errors = validateFull(req.body);
+    if (errors.length) return res.status(400).json({ errors });
+
+    const info = db
+      .prepare("INSERT INTO items (name, price, stock) VALUES (?, ?, ?)")
+      .run(req.body.name.trim(), req.body.price, req.body.stock);
+
+    const created = db
+      .prepare("SELECT * FROM items WHERE id = ?")
+      .get(info.lastInsertRowid);
+
+    res.status(201).json(created);
   } catch (err) {
-    Sentry.captureException(err);
-    res.status(500).send("Error enviado a Sentry");
+    next(err); 
+  }
+});
+
+app.delete("/items/:id", (req, res, next) => {
+  try {
+    const row = db
+      .prepare("SELECT * FROM items WHERE id = ?")
+      .get(req.params.id);
+    if (!row) return res.status(404).json({ error: "Item no encontrado" });
+
+    db.prepare("DELETE FROM items WHERE id = ?").run(req.params.id);
+    res.json(row);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post("/__reset", (_req, res, next) => {
+  try {
+    db.exec("DELETE FROM items; VACUUM;");
+    res.json({ ok: true });
+  } catch (err) {
+    next(err);
   }
 });
 
 // ----------------- ENDPOINT DE HEALTH CHECK -----------------
 app.get("/health", (req, res) => {
   try {
-    // Prueba mínima: que la DB responda
     const check = db.prepare("SELECT 1").get();
     res.status(200).json({
       status: "ok",
@@ -103,13 +113,31 @@ app.get("/health", (req, res) => {
     res.status(500).json({ status: "error", message: err.message });
   }
 });
+// ----------------- ENDPOINT DE TEST c/ SENTRY -----------------
+app.get("/test-error", (req, res, next) => {
+  try {
+    throw new Error("Error generado manualmente desde /test-error");
+  } catch (err) {
+    next(err);
+  }
+});
 
+// ----------------- DESCOMENTAR p/ FORZAR UN ERROR REAL OPCIONAL  -----------------
+// if (process.env.FORZAR_ERROR === "1") {
+//   setTimeout(() => {
+//     throw new Error("Error simulado para comprobar integración Sentry (inicio)");
+//   }, 2000);
+// }
 
 // ----------------- MANEJO DE ERRORES -----------------
+app.use(Sentry.Handlers.errorHandler()); 
+
 app.use((err, req, res, next) => {
   console.error("Error capturado:", err.message);
-  Sentry.captureException(err); // enviar a Sentry
+  Sentry.captureException(err); 
   res.status(500).send("Ocurrió un error interno.");
 });
 
 module.exports = { app, initDatabase, getDbFile };
+
+
