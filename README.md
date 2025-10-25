@@ -105,4 +105,4 @@ Lista de comandos:
 - node server.js (inicio el servidor- remoto local) 
 - npm test (hace las pruebas unitarias y de test- remoto local)
 - npm test -- --coverage (cobertura de test de pruebas)
-- http://localhost:3000/ (render entorno local)
+- http://localhost:3000/ (render entorno local).
