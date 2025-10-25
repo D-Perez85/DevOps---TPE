@@ -60,7 +60,6 @@ jobs:
       - name: 🏗️ Build (si existe)
         run: npm run build --if-present
 
-      # (Opcional) Subir artefacto de build SOLO en Node 20
       - name: ⬆️ Subir artefacto /dist
         if: matrix.node-version == '20.x'
         uses: actions/upload-artifact@v4
@@ -104,6 +103,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: 🐳 Build & Push
+        id: build_push
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -111,12 +111,44 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          # Opcional: mejora caché entre builds
           cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/mi-app-node:latest
           cache-to: type=inline
+          # Captura el tag SHA para el despliegue con PATCH
+          # Utilizamos la sintaxis de salida de Build-Push para capturar el digest
+          outputs: "type=image,name=${{ secrets.DOCKERHUB_USERNAME }}/mi-app-node,tag={{rev}},push=true" 
 
       - name: 📊 Upload coverage report
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: coverage
+          
+      # ------------------------------------------------------------------------
+      # STEPS PARA DESPLIEGUE CONTINUO (CD) - USANDO PATCH
+      # ------------------------------------------------------------------------
+      - name: 💾 Obtener Image ID
+        id: image_id
+        run: |
+          # Render usa el 'digest' o SHA de la imagen para garantizar la trazabilidad
+          # Se construye la URL de la imagen con el SHA obtenido del paso 'meta'
+          IMAGE_TAG="${{ secrets.DOCKERHUB_USERNAME }}/mi-app-node@sha256:${{ steps.meta.outputs.digest }}"
+          echo "image_with_sha=$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      - name: 📢 Actualizar y Desplegar en Render (PATCH)
+        run: |
+          RENDER_SERVICE_URL="https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}"
+          IMAGE_TO_DEPLOY="${{ steps.image_id.outputs.image_with_sha }}"
+          
+          echo "Actualizando Render con la imagen específica: ${IMAGE_TO_DEPLOY}..."
+
+          # Usa PATCH para actualizar la propiedad 'image' del servicio con la imagen SHA
+          # Render inicia automáticamente un despliegue (pull de la imagen) tras este cambio de configuración
+          curl -X PATCH "${RENDER_SERVICE_URL}" \
+            -H "Accept: application/json" \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d "{\"serviceDetails\": {\"image\": {\"url\": \"${IMAGE_TO_DEPLOY}\"}}}"
+            
+        env:
+          RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }} 
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
