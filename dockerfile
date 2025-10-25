@@ -27,17 +27,15 @@ COPY --from=build /app /app
 # --------------------------------------------------
 # 🔑 CORRECCIÓN DE PERMISOS PARA ESCRITURA DE LOGS
 # --------------------------------------------------
-# 1. Crear la carpeta /app/logs.
-RUN mkdir -p /app/logs \
-# 2. Asignar propiedad de /data y /app/logs al usuario 'nodeuser'
-# Esto resuelve el error EACCES para la carpeta de logs
-    && chown -R nodeuser:nodejs /app/logs \ 
-    && chown -R nodeuser:nodejs /data \
-# 3. Dar permisos de ejecución/escritura (777 es permisivo, 755 o 770 es mejor,
-# pero 777 para /data/logs funciona si la app lo necesita).
+  # 1. Crear la carpeta /app/logs y data.
+  RUN mkdir -p /app/logs /data \
+# 2. Asignamos la propiedad de ambas carpetas al usuario 'nodeuser'
+# Esto resuelve el error EACCES para /app/logs y el error "No such file" para /data
+    && chown -R nodeuser:nodejs /app/logs /data \
+# 3. Este chmod ahora solo se aplica a /data (ya que fue creado en la línea anterior)
     && chmod 777 /data
 
-# Variables de entorno
+# 4.Variables de entorno
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV DB_URL=/data/data.sqlite
@@ -56,3 +54,8 @@ USER nodeuser
 
 # Comando de inicio
 CMD ["node", "server.js"]
+
+
+
+
+
