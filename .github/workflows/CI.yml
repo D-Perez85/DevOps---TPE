@@ -124,7 +124,7 @@ jobs:
           path: coverage
           
       # ------------------------------------------------------------------------
-      # STEPS PARA DESPLIEGUE CONTINUO (CD) - USANDO PATCH
+      # STEPS PARA DESPLIEGUE CONTINUO (CD) - USANDO POST
       # ------------------------------------------------------------------------
       - name: 💾 Obtener Image ID
         id: image_id
@@ -134,21 +134,24 @@ jobs:
           IMAGE_TAG="${{ secrets.DOCKERHUB_USERNAME }}/mi-app-node@sha256:${{ steps.meta.outputs.digest }}"
           echo "image_with_sha=$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-      - name: 📢 Actualizar y Desplegar en Render (PATCH)
+      - name: 📢 Activar Despliegue en Render (POST)
         run: |
-          RENDER_SERVICE_URL="https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}"
-          IMAGE_TO_DEPLOY="${{ steps.image_id.outputs.image_with_sha }}"
-          
-          echo "Actualizando Render con la imagen específica: ${IMAGE_TO_DEPLOY}..."
+          # Construye la URL de la API usando el Service ID (obtenido de secrets)
+          RENDER_DEPLOY_URL="https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys"
 
-          # Usa PATCH para actualizar la propiedad 'image' del servicio con la imagen SHA
-          # Render inicia automáticamente un despliegue (pull de la imagen) tras este cambio de configuración
-          curl -X PATCH "${RENDER_SERVICE_URL}" \
+          echo "Activando despliegue de la última imagen en Render (ID: ${{ secrets.RENDER_SERVICE_ID }})..."
+
+          # Envía la petición POST para crear un nuevo despliegue y forzar el pull de la última imagen.
+          curl -X POST "${RENDER_DEPLOY_URL}" \
             -H "Accept: application/json" \
             -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
-            -H "Content-Type: application/json" \
-            -d "{\"serviceDetails\": {\"image\": {\"url\": \"${IMAGE_TO_DEPLOY}\"}}}"
+            -d '{}'
             
         env:
           RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }} 
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+
+
+
+
+
