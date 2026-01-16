@@ -1,4 +1,3 @@
-
 require("dotenv").config();
 const { validateFull, validatePartial } = require("./utils");
 const express = require("express");
@@ -11,8 +10,9 @@ const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-// ----------------- CONFIGURACIÓN DE SENTRY (Handlers de Solicitud) -----------------
-// SENTRY.INIT y el error handler final se mueven a server.js para evitar el fallo de arranque
+// ----------------- CONFIGURACIÓN DE SENTRY -----------------
+// NOTA: Sentry.init se realiza en server.js para evitar doble inicialización.
+// Aquí solo activamos los handlers necesarios para las rutas.
 app.use(Sentry.Handlers.requestHandler());
 app.use(Sentry.Handlers.tracingHandler());
 
@@ -166,6 +166,14 @@ app.get("/test-error", (req, res, next) => {
     }
 });
 
-// Los handlers de error de Sentry y Express se aplican en server.js
+// ----------------- DESCOMENTAR p/ FORZAR UN ERROR REAL OPCIONAL  -----------------
+// if (process.env.FORZAR_ERROR === "1") {
+//   setTimeout(() => {
+//     throw new Error("Error simulado para comprobar integración Sentry (inicio)");
+//   }, 2000);
+// }
+
 module.exports = { app, initDatabase, getDbFile };
+
  
+

@@ -31,12 +31,15 @@ if (process.env.SENTRY_DSN) {
     Sentry.init({
         dsn: process.env.SENTRY_DSN,
         tracesSampleRate: 1.0,
+        // Fusión: Agregamos la línea de release que venía de tu rama feature
+        release: process.env.SENTRY_RELEASE || "local-dev",
     });
 
     // Handlers de Sentry para requests y errores
     app.use(Sentry.Handlers.requestHandler());
     app.use(Sentry.Handlers.errorHandler());
 
+    // Fusión: Usamos el log más detallado de master
     logger.info(`Sentry activado (DSN detectado: ${process.env.SENTRY_DSN.slice(0, 20)}...)`);
 } else {
     logger.warn("Sentry no activado (variable SENTRY_DSN no definida)");
