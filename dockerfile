@@ -92,6 +92,9 @@ RUN apk add --no-cache curl
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
   CMD curl -f http://localhost:${PORT}/items || exit 1
 
+ARG RELEASE_VERSION
+ENV SENTRY_RELEASE=${RELEASE_VERSION}
+
 # Cambiar a usuario no root después de preparar todo
 USER node
 
