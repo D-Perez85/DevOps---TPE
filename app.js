@@ -168,3 +168,4 @@ app.get("/test-error", (req, res, next) => {
 
 // Los handlers de error de Sentry y Express se aplican en server.js
 module.exports = { app, initDatabase, getDbFile };
+ 
