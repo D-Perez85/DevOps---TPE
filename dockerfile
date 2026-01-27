@@ -9,7 +9,8 @@ RUN apk add --no-cache python3 make g++ curl
 COPY package*.json ./
 
 # Instalamos todas las dependencias dentro del contenedor
-RUN npm install @sentry/node @sentry/tracing && npm ci
+#RUN npm install @sentry/node @sentry/tracing && npm ci
+RUN npm ci --only=production
 
 # Copiamos el resto del código
 COPY . .
@@ -33,12 +34,15 @@ COPY --from=build /app /app
 # Esto resuelve el error EACCES para /app/logs y el error "No such file" para /data
     && chown -R nodeuser:nodejs /app/logs /data \
 # 3. Este chmod ahora solo se aplica a /data (ya que fue creado en la línea anterior)
-    && chmod 777 /data
+    && chmod 700 /data
 
 # 4.Variables de entorno
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV DB_URL=/data/data.sqlite
+
+ARG RELEASE_VERSION
+ENV SENTRY_RELEASE=${RELEASE_VERSION}
 
 # Puerto
 EXPOSE 3000
@@ -47,9 +51,6 @@ EXPOSE 3000
 RUN apk add --no-cache curl
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
   CMD curl -f http://localhost:${PORT}/items || exit 1
-
-ARG RELEASE_VERSION
-ENV SENTRY_RELEASE=${RELEASE_VERSION}
 
 # Cambiar a usuario no root después de preparar todo
 # IMPORTANTE: Cambiamos de USER node a USER nodeuser para que use el usuario que tiene permisos en /app/logs
