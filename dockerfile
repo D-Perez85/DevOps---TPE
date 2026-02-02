@@ -44,21 +44,20 @@ ENV DB_URL=/data/data.sqlite
 ARG RELEASE_VERSION
 ENV SENTRY_RELEASE=${RELEASE_VERSION}
 
-# Puerto
+# Puerto.
 EXPOSE 3000
 
-# Healthcheck
+# Healthcheck.
 RUN apk add --no-cache curl
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
   CMD curl -f http://localhost:${PORT}/items || exit 1
 
-# Cambiar a usuario no root después de preparar todo
+# Cambiar a usuario no root después de preparar todo.
 # IMPORTANTE: Cambiamos de USER node a USER nodeuser para que use el usuario que tiene permisos en /app/logs
 USER nodeuser
 
-# Comando de inicio
+# Comando de inicio:
 CMD ["node", "server.js"]
-
 
 
 
