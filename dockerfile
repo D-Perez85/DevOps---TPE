@@ -1,64 +1,55 @@
-# -------- Base para build --------
-FROM node:22-alpine AS build
+# =========================
+# Stage 1 — Dependencies
+# =========================
+FROM node:22-alpine AS deps
+
 WORKDIR /app
 
-# Toolchain para módulos nativos (ej. better-sqlite3)
-RUN apk add --no-cache python3 make g++ curl
+# Toolchain para módulos nativos (better-sqlite3, etc.)
+RUN apk add --no-cache python3 make g++
 
-# Copiamos package.json e instalamos dependencias
+# Copiamos manifests
 COPY package*.json ./
 
-# Instalamos todas las dependencias dentro del contenedor
-#RUN npm install @sentry/node @sentry/tracing && npm ci
+# Instalamos SOLO dependencias de producción
 RUN npm ci --only=production
 
-# Copiamos el resto del código
-COPY . .
 
-# -------- Imagen final --------
-FROM node:22-alpine AS prod
+# =========================
+# Stage 2 — Runtime
+# =========================
+FROM node:22-alpine
+
 WORKDIR /app
 
-# Crear usuario no root y grupo (lo haces bien)
-RUN addgroup -S nodejs && adduser -S nodeuser -G nodejs
+# Crear usuario no-root
+RUN addgroup -S nodejs \
+ && adduser -S nodeuser -G nodejs
 
-# Copiamos node_modules y app compilada desde build
-COPY --from=build /app /app
+# Copiamos node_modules y código
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
 
-# --------------------------------------------------
-# 🔑 CORRECCIÓN DE PERMISOS PARA ESCRITURA DE LOGS
-# --------------------------------------------------
-  # 1. Crear la carpeta /app/logs y data.
-  RUN mkdir -p /app/logs /data \
-# 2. Asignamos la propiedad de ambas carpetas al usuario 'nodeuser'
-# Esto resuelve el error EACCES para /app/logs y el error "No such file" para /data
-    && chown -R nodeuser:nodejs /app/logs /data \
-# 3. Este chmod ahora solo se aplica a /data (ya que fue creado en la línea anterior)
-    && chmod 700 /data
+# Crear carpetas necesarias y permisos
+RUN mkdir -p /app/logs /data \
+ && chown -R nodeuser:nodejs /app /data \
+ && chmod 700 /data
 
-# 4.Variables de entorno
+# Variables de entorno (NO secretos)
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV DB_URL=/data/data.sqlite
 
-ARG RELEASE_VERSION
-ENV SENTRY_RELEASE=${RELEASE_VERSION}
-
-# Puerto.
+# Puerto expuesto
 EXPOSE 3000
 
-# Healthcheck.
+# Healthcheck
 RUN apk add --no-cache curl
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
   CMD curl -f http://localhost:${PORT}/items || exit 1
 
-# Cambiar a usuario no root después de preparar todo.
-# IMPORTANTE: Cambiamos de USER node a USER nodeuser para que use el usuario que tiene permisos en /app/logs
+# Usuario no-root
 USER nodeuser
 
-# Comando de inicio:
+# Start
 CMD ["node", "server.js"]
-
-
-
-
